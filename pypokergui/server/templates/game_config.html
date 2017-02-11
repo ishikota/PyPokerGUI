@@ -1,0 +1,20 @@
+  <div id="rule_box">
+    <h2>Game Config</h2>
+      <div id="game_rule">
+        <ul>
+          <li>{{ "max_round:%s" % config.rule['max_round'], }}</li>
+          <li>{{ "initial_stack:%s" % config.rule['initial_stack'], }}</li>
+          <li>{{ "small_blind:%s" % config.rule['small_blind'], }}</li>
+          <li>{{ "ante:%s" % config.rule['ante'], }}</li>
+          <li>{{ "blind structure:%s" % config.rule['blind_structure'], }}</li>
+        </ul>
+      </div>
+  </div>
+  <div id="player_box">
+    <h2>Players Information</h2>
+    <ul>
+      {% for player in config.members %}
+        {% include "player.html" %}
+      {% end %}
+    </ul>
+  </div>

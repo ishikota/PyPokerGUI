@@ -1,0 +1,19 @@
+{% extends "base_event.html" %}
+
+{% block event_title %}Declare Your Action{% end %}
+
+{% block event_content %}
+<div id="ask_action">
+  <span>HoleCard: {{ hole_card }}</span>
+  <ul>Valid Actions
+    {% for action in valid_actions %}
+      <li>
+        <span>{{action['action']}}</span>
+        :
+        <span>{{action['amount']}}</span>
+      </li>
+    {% end %}
+  </ul>
+  <span style="display:none">>Action History: {{action_histories }}</span>
+</div>
+{% end %}

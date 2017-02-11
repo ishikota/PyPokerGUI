@@ -1,0 +1,11 @@
+{% extends "base_event.html" %}
+
+{% block event_title %}Round Result{% end %}
+
+{% block event_content %}
+<div id="round_result">
+  <span>Round: {{ round_count }}</span>
+  <span>Winner: {{ ",".join([player['name'] for player in winners]) }}</span>
+  <span>Hand Info: {{ hand_info }}</span>
+</div>
+{% end %}
