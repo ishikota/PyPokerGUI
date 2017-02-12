@@ -90,18 +90,24 @@ var updater = {
         window.console.log("updateGame: " + JSON.stringify(content))
         message_type = content['update_type']
         if ('round_start_message' == message_type) {
-          window.console.log("round_start_message: " + content)
+          updater.roundStart(content.event_html)
         } else if ('street_start_message' == message_type) {
           updater.newStreet(content.table_html, content.event_html)
         } else if ('game_update_message' == message_type) {
           updater.newAction(content.table_html, content.event_html)
        } else if ('round_result_message' == message_type) {
          updater.roundResult(content.table_html, content.event_html)
+       } else if ('game_result_message' == message_type) {
+         updater.gameResult(content.event_html)
        } else if ('ask_message' == message_type) {
          updater.askAction(content.table_html, content.event_html)
        } else {
           window.console.error("unexpected message in updateGame: " + content)
        }
+    },
+
+    roundStart: function(event_html) {
+      $("#event_box").html($(event_html))
     },
 
     newStreet: function(table_html, event_html) {
@@ -116,6 +122,10 @@ var updater = {
 
     roundResult: function(table_html, event_html) {
       $("#table").html($(table_html))
+      $("#event_box").html($(event_html))
+    },
+
+    gameResult: function(event_html) {
       $("#event_box").html($(event_html))
     },
 

@@ -99,6 +99,7 @@ class PokerSocketHandler(tornado.websocket.WebSocketHandler):
 
     def _progress_the_game_till_human(self):
         while self._is_ai_uuid(global_game_config.next_player_uuid):  # TODO break if game has finished
+            if global_game_config._has_game_finished(global_game_config.latest_messages): break
             action, amount = global_game_config.ask_action_to_ai(global_game_config.next_player_uuid)
             global_game_config.update_game(action, amount)
             self._broadcast_update_game()
@@ -140,15 +141,47 @@ class PokerSocketHandler(tornado.websocket.WebSocketHandler):
                         waiter.write_message(update)
                     except:
                         logging.error("Error sending message", exc_info=True)
+                for _uuid, ai_player in global_game_config.ai_players.items():
+                    self._broadcast_message_to_ai(message, ai_player)
             else:
-                if len(dest_uuid) <= 2: continue
-                dest_socket = self._find_socket_by_uuid(dest_uuid)
-                try:
-                    update = self._gen_game_update_message(message)
-                    dest_socket.write_message(update)
-                except:
-                    logging.error("Error sending message", exc_info=True)
+                if len(dest_uuid) <= 2:
+                    ai_player = global_game_config.ai_players[dest_uuid]
+                    self._broadcast_message_to_ai(message, ai_player)
+                else:
+                    dest_socket = self._find_socket_by_uuid(dest_uuid)
+                    try:
+                        update = self._gen_game_update_message(message)
+                        dest_socket.write_message(update)
+                    except:
+                        logging.error("Error sending message", exc_info=True)
             time.sleep(5)
+
+    def _broadcast_message_to_ai(self, message, ai_player):
+        message_type = message['message']['message_type']
+        if 'round_start_message' == message_type:
+            round_count = message['message']['round_count']
+            hole_card = message['message']['hole_card']
+            seats = message['message']['seats']
+            ai_player.receive_round_start_message(round_count, hole_card, seats)
+        elif 'street_start_message' == message_type:
+            street = message['message']['street']
+            round_state = message['message']['round_state']
+            ai_player.receive_street_start_message(street, round_state)
+        elif 'game_update_message' == message_type:
+            action = message['message']['action']
+            round_state = message['message']['round_state']
+            ai_player.receive_game_update_message(action, round_state)
+        elif 'round_result_message' == message_type:
+            winners = message['message']['winners']
+            round_state = message['message']['round_state']
+            hand_info = message['message']['hand_info']
+            ai_player.receive_round_result_message(winners, hand_info, round_state)
+        elif 'game_result_message' == message_type:
+            pass  # ai does not handle game result
+        elif 'ask_message' == message_type:
+            pass  # ask message handling is done in global_game_config.ask_action_to_ai
+        else:
+            raise Exception("Unexpected message received : %r" % message)
 
     def _find_socket_by_uuid(self, uuid):
         target = [sock for sock in self.waiters if sock.uuid == uuid]
@@ -168,7 +201,14 @@ class PokerSocketHandler(tornado.websocket.WebSocketHandler):
     def _gen_game_update_message(self, message):
         message_type = message['message']['message_type']
         if 'round_start_message' == message_type:
-            content = message
+            round_count = message['message']['round_count']
+            hole_card = message['message']['hole_card']
+            event_html_str = self.render_string("event_round_start.html",
+                    round_count=round_count, hole_card=hole_card)
+            content = {
+                    'update_type': message_type,
+                    'event_html': tornado.escape.to_basestring(event_html_str)
+                    }
         elif 'street_start_message' == message_type:
             round_state = message['message']['round_state']
             street = message['message']['street']
@@ -203,6 +243,13 @@ class PokerSocketHandler(tornado.websocket.WebSocketHandler):
                     'update_type': message_type,
                     'table_html': tornado.escape.to_basestring(table_html_str),
                     'event_html': tornado.escape.to_basestring(event_html_str)
+                    }
+        elif 'game_result_message' == message_type:
+            game_info = message['message']['game_information']
+            event_html_str = self.render_string("event_game_result.html", game_information=game_info)
+            content = {
+                    'update_type': message_type,
+                    'event_html' : tornado.escape.to_basestring(event_html_str)
                     }
         elif 'ask_message' == message_type:
             round_state = message['message']['round_state']
@@ -291,12 +338,14 @@ class GameConfig(object):
     def start_game(self):
         assert self.engine and self.engine_config and self.players_info
         self.latest_messages = self.engine.start_game(self.players_info, self.engine_config)
-        self.next_player_uuid = self._fetch_next_player_uuid(self.latest_messages)
+        if not self._has_game_finished(self.latest_messages):
+            self.next_player_uuid = self._fetch_next_player_uuid(self.latest_messages)
 
     def update_game(self, action, amount):
         assert len(self.latest_messages) != 0  # check that start_game has already called
         self.latest_messages = self.engine.update_game(action, amount)
-        self.next_player_uuid = self._fetch_next_player_uuid(self.latest_messages)
+        if not self._has_game_finished(self.latest_messages):
+            self.next_player_uuid = self._fetch_next_player_uuid(self.latest_messages)
 
     def ask_action_to_ai(self, uuid):
         ai_player = self.ai_players[uuid]
@@ -308,6 +357,9 @@ class GameConfig(object):
                 ask_message['message']['round_state']
         )
 
+    def _has_game_finished(self, new_messages):
+        _uuid, last_message = new_messages[-1]
+        return "game_result_message" == last_message['message']['message_type']
 
     def _fetch_next_player_uuid(self, new_messages):
         ask_uuid, ask_message = new_messages[-1]

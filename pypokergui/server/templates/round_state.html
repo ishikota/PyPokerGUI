@@ -6,7 +6,7 @@
     <span id="dealer_btn">delaer btn : {{ round_state['dealer_btn'] }}</span>
     <span id="street">street : {{ round_state['street'] }}</span>
     <span id="next_player">next player :
-      {{ round_state['seats'][round_state['next_player']]['name'] }}
+      {{ round_state['seats'][round_state['next_player']]['name'] if round_state['next_player'] != 'not_found' else "None" }}
     </span>
   </div>
   <div id="community_card">
