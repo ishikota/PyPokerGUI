@@ -19,7 +19,7 @@ import uuid
 from tornado.options import define, options
 
 import message_processor as MP
-
+import ai_generator
 
 define("port", default=8888, help="run on the given port", type=int)
 define("config", default=None, help="path to game config", type=int)
@@ -283,7 +283,10 @@ class GameConfig(object):
         )
 
     def _setup_ai_player(self, setup_script_path):
-        pass # TODO setup ai player
+        if not ai_generator.healthcheck(setup_script_path, quiet=True):
+            raise Exception("Failed to setup ai from [ %s ]" % setup_script_path)
+        setup_method = ai_generator._import_setup_method(setup_script_path)
+        return setup_method()
 
     def start_game(self):
         assert self.engine and self.engine_config and self.players_info
@@ -299,15 +302,11 @@ class GameConfig(object):
         ai_player = self.ai_players[uuid]
         ask_uuid, ask_message = self.latest_messages[-1]
         assert ask_message['type'] == 'ask' and uuid == ask_uuid
-        return 'fold', 0
-        """TODO
         return ai_player.declare_action(
                 ask_message['message']['valid_actions'],
                 ask_message['message']['hole_card'],
                 ask_message['message']['round_state']
         )
-        """
-
 
 
     def _fetch_next_player_uuid(self, new_messages):
@@ -329,6 +328,7 @@ class GameConfig(object):
 
 global_game_config = GameConfig()
 
+path = "/Users/kota/development/PyPokerGUIEnv/PyPokerGUI/pypokergui/ttt.py"
 sample_game_config = {
         'max_round': 10,
         'initial_stack': 100,
@@ -336,9 +336,9 @@ sample_game_config = {
         'ante': 5,
         'blind_structure': None,
         'ai_players': [
-            { 'name': "ai1", "path": "path1" },
-            { 'name': "ai2", "path": "path2" },
-            { 'name': "ai3", "path": "path3" },
+            { 'name': "ai1", "path": path },
+            { 'name': "ai2", "path": path },
+            { 'name': "ai3", "path": path },
         ]
 }
 
