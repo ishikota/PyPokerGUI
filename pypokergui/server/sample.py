@@ -238,7 +238,7 @@ class PokerSocketHandler(tornado.websocket.WebSocketHandler):
             round_count = message['message']['round_count']
             table_html_str = self.render_string("round_state.html", round_state=round_state)
             event_html_str = self.render_string("event_round_result.html",
-                    hand_info=hand_info, winners=winners, round_count=round_count)
+                    round_state=round_state, hand_info=hand_info, winners=winners, round_count=round_count)
             content = {
                     'update_type': message_type,
                     'table_html': tornado.escape.to_basestring(table_html_str),

@@ -1,29 +1,24 @@
 <div id="waiting_room">
+  <h1 class="page-header">Game Settings</h1>
   <div id="config_box">
     {% include "game_config.html" %}
   </div>
   <div id="input_box">
-    <form action="/a/register" method="post" id="registration_form">
-      <table>
-        <tr>
-          <td><input name="body" id="message" style="width:500px"></td>
-          <td style="padding-left:5px">
-            <input type="submit" value="{{ _("Register") }}"}}>
-            <input type="hidden" name="next" value="{{ request.path }}">
-            {% module xsrf_form_html() %}
-          </td>
-        </tr>
-      </table>
+    <form action="/a/register" method="post" id="registration_form" class="form-inline">
+    <div class="form-group">
+      <label for="message">Register Me</label>
+      <input name="body" id="message" class="form-control" placeholder="Enter your name">
+    </div>
+      <input type="submit" value="{{ _("Register") }}"}} class="btn btn-primary">
+      <input type="hidden" name="next" value="{{ request.path }}">
+      {% module xsrf_form_html() %}
     </form>
     <form action="/a/start_game" method="post" id="start_game_form">
-        <tr>
-          <td>
-            <input type="submit" value="{{ _("Start") }}">
-            <input type="hidden" name="next" value="{{ request.path }}">
-            {% module xsrf_form_html() %}
-          </td>
-        </tr>
-      </table>
+      <div class="form-group"><!-- need this element for margin --></div>
+      <input type="submit" value="{{ _("Start Poker") }}" class="btn btn-success">
+      <input type="hidden" name="next" value="{{ request.path }}">
+      {% module xsrf_form_html() %}
     </form>
   </div>
+  <div></div> <!-- for adding space -->
 </div>

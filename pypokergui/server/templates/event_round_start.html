@@ -4,7 +4,10 @@
 
 {% block event_content %}
 <div id="round_start">
-  <div id="event_hole_card">Your hole card : {{hole_card}}</div>
+  <h3>Hole Card : {{hole_card}}</h3>
+  {% for card in hole_card %}
+    <img class="card" src="{{ static_url("images/card_%s.png" % card) }}" >
+  {% end %}
 </div>
 {% end %}
 

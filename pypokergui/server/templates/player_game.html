@@ -1,4 +1,11 @@
-<div class="player-{{"active" if player["state"]=="participating" else "folded"}}">
-  <span class="player-name">{{player["name"]}}</span>
-  <span class="player-stack">(stack={{player["stack"]}})</span>
-</div>
+<span class="player-{{"active" if player["state"]=="participating" else "folded"}}">
+  <div class="thumbnail md-col-2 center-block" style="display:inline-block">
+    <i class="material-icons md-48 md-dark {{"md-inactive" if player["state"]=="folded" else ""}}">
+      face
+    </i>
+    <div class="caption">
+      <span class="player-name">{{player["name"]}}</span>
+      <span class="player-stack">(${{player["stack"]}})</span>
+    </div>
+  </div>
+</span>

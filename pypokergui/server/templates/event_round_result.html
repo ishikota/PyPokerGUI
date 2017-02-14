@@ -4,8 +4,28 @@
 
 {% block event_content %}
 <div id="round_result">
-  <span>Round: {{ round_count }}</span>
-  <span>Winner: {{ ",".join([player['name'] for player in winners]) }}</span>
-  <span>Hand Info: {{ hand_info }}</span>
+  <h4> Winner => {{ ",".join([player['name'] for player in winners]) }}</h4>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>player</td>
+        <th>hand</th>
+        <th>hole-high</th>
+        <th>hole-low</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for hand in hand_info %}
+      <tr>
+        <td>
+          {{ [player['name'] for player in round_state['seats'] if player['uuid']==hand['uuid']][0] }}
+        </td>
+        <td>{{ hand['hand']['hand']['strength'] }}</td>
+        <td>{{ hand['hand']['hole']['high'] }}</td>
+        <td>{{ hand['hand']['hole']['low'] }}</td>
+      </tr>
+      {% end %}
+    </tbody>
+  </table>
 </div>
 {% end %}

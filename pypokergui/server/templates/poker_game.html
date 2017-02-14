@@ -1,29 +1,32 @@
-<div id="poker_game">
-  <div id="table">
-    TODO POKER GAME
+<div id="poker_game" class="row">
+  <div id="table" class="col-md-6">
+    <h3>Loading...<h3>
   </div>
-  <hr>
-  <div id="event_box">
-  </div>
-  <div id="input_box">
-    <form action="/a/declare_action" method="post" id="declare_action_form">
-      <table>
-        <tr>
-          <td>
-            <select name="action">
-              <option value="fold">FOLD</option>
-              <option value="call">CALL</option>
-              <option value="raise">RAISE</option>
-            </select>
-          </td>
-          <td><input name="amount"></td>
-          <td style="padding-left:5px">
-            <input type="submit" value="{{ _("declare action") }}"}}>
-            <input type="hidden" name="next" value="{{ request.path }}">
-            {% module xsrf_form_html() %}
-          </td>
-        </tr>
-      </table>
-    </form>
+  <div id="info_box" class="info-box col-md-6">
+    <div id="event_box">
+    </div>
+    <hr>
+    <div id="input_box" class="container">
+      <form action="/a/declare_action" method="post" id="declare_action_form">
+        <table>
+          <tr>
+            <td>
+              <select name="action">
+                <option value="fold">FOLD</option>
+                <option value="call">CALL</option>
+                <option value="raise">RAISE</option>
+              </select>
+            </td>
+            <td><input name="amount"></td>
+            <td style="padding-left:5px">
+              <input type="submit" value="{{ _("declare action") }}"}}>
+              <input type="hidden" name="next" value="{{ request.path }}">
+              {% module xsrf_form_html() %}
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+    <div></div> <!-- for creating space -->
   </div>
 </div>

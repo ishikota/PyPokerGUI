@@ -1,5 +1,6 @@
 <div id="round_state">
-  <h3>Game Information</h3>
+  <h3>Round {{ round_state['round_count'] }} ( {{ round_state['street'].upper() }} )</h3>
+  <!--
   <div id="basic_info_bar">
     <span id="small_blind_amount">small blind : {{ round_state['small_blind_amount'] }}</span>
     <span id="round_count">round : {{ round_state['round_count'] }}</span>
@@ -9,15 +10,29 @@
       {{ round_state['seats'][round_state['next_player']]['name'] if round_state['next_player'] != 'not_found' else "None" }}
     </span>
   </div>
+  -->
   <div id="community_card">
     <h3>Community Card</h3>
     {% for card in round_state['community_card'] %}
-      <span class="card">{{ card }}</span>
+      <img class="card" src="{{ static_url("images/card_%s.png" % card) }}" >
     {% end %}
   </div>
   <h3>Pot</h3>
   <div id="pot">
-    <span>pot : {{round_state['pot']}} </span>
+    <div class="thumbnail pot" style="display:inline-block">
+      <img src="{{ static_url("images/pot.jpg") }}" >
+      <div class="caption">
+        <p>${{ round_state['pot']['main']['amount'] }}</p>
+      </div>
+    </div>
+    {% for sidepot in round_state['pot']['side'] %}
+      <div class="thumbnail pot" style="display:inline-block">
+        <img src="{{ static_url("images/pot.jpg") }}" >
+        <div class="caption">
+          <p>${{ round_state['pot']['main']['amount'] }}</p>
+        </div>
+      </div>
+    {% end %}
   </div>
   <h3>Players Information</h3>
   <div id="seats">

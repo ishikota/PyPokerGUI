@@ -4,10 +4,15 @@
 
 {% block event_content %}
 <div id="update_game">
-  <span>Player:
-    {{ [player['name'] for player in round_state['seats'] if player['uuid']==action['player_uuid']][0] }}
-  </span>
-  <span>Action: {{ action['action'] }}</span>
-  <span>Bet Amount: {{ action['amount'] }}</span>
+  <h4> 
+    <span>[ {{ [player['name'] for player in round_state['seats'] if player['uuid']==action['player_uuid']][0] }} ]</span>
+    <span>{{ " declared " }}</span>
+    <span>
+      [ {{ action['action'] }} 
+      {% if action['action'] != "fold" %}
+        {{ " $%s" % action['amount'] }}
+      {% end %} ]
+    </span>
+  </h4>
 </div>
 {% end %}

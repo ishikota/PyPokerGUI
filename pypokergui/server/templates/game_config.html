@@ -1,20 +1,45 @@
   <div id="rule_box">
-    <h2>Game Config</h2>
+    <h2 class="sub-header">Rule</h2>
       <div id="game_rule">
-        <ul>
-          <li>{{ "max_round:%s" % config.rule['max_round'], }}</li>
-          <li>{{ "initial_stack:%s" % config.rule['initial_stack'], }}</li>
-          <li>{{ "small_blind:%s" % config.rule['small_blind'], }}</li>
-          <li>{{ "ante:%s" % config.rule['ante'], }}</li>
-          <li>{{ "blind structure:%s" % config.rule['blind_structure'], }}</li>
-        </ul>
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>max round</th>
+                <th>initial stack</th>
+                <th>small blind</th>
+                <th>ante</th>
+              <tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ config.rule['max_round'] }}</td>
+                <td>{{ config.rule['initial_stack'] }}</td>
+                <td>{{ config.rule['small_blind'] }}</td>
+                <td>{{ config.rule['ante'] }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
   </div>
   <div id="player_box">
-    <h2>Players Information</h2>
+    <h2 class="sub-header">Players</h2>
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>player type</th>
+            <th>player name</th>
+          <tr>
+        </thead>
+        <tbody>
+            {% for player in config.members %}
+              {% include "player.html" %}
+            {% end %}
+        </tbody>
+      </table>
+    </div>
     <ul>
-      {% for player in config.members %}
-        {% include "player.html" %}
-      {% end %}
     </ul>
   </div>
