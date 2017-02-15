@@ -131,6 +131,11 @@ class PokerSocketHandler(tornado.websocket.WebSocketHandler):
                 waiter.write_message(update)
             except:
                 logging.error("Error sending message", exc_info=True)
+        # FIXME TMP SOLUTION to broadcast game_start_message to ai
+        dummy_game_info = global_game_config.latest_messages[0][1]['message']
+        for uuid, player in global_game_config.ai_players.items():
+            player.receive_game_start_message(dummy_game_info)
+            player.set_uuid(uuid)
 
     def _broadcast_update_game(self):
         for dest_uuid, message in global_game_config.latest_messages:
@@ -380,17 +385,24 @@ class GameConfig(object):
 
 global_game_config = GameConfig()
 
-path = "/Users/kota/development/PyPokerGUIEnv/PyPokerGUI/pypokergui/ttt.py"
+path = "/Users/kota/development/PyPokerGUIEnv/PyPokerGUI/pypokergui/ggg.py"
 sample_game_config = {
-        'max_round': 10,
-        'initial_stack': 100,
-        'small_blind': 10,
-        'ante': 5,
+        'max_round': 50,
+        'initial_stack': 10000,
+        'small_blind': 25,
+        'ante': 0,
         'blind_structure': None,
         'ai_players': [
             { 'name': "ai1", "path": path },
             { 'name': "ai2", "path": path },
             { 'name': "ai3", "path": path },
+            { 'name': "ai4", "path": path },
+            { 'name': "ai5", "path": path },
+            { 'name': "ai6", "path": path },
+            { 'name': "ai7", "path": path },
+            { 'name': "ai8", "path": path },
+#            { 'name': "ai9", "path": path },
+#            { 'name': "ai10", "path": path },
         ]
 }
 
@@ -407,7 +419,7 @@ def main():
     config = sample_game_config  # TODO parse config file into hash
     setup_config(config)
     app = Application()
-    app.listen(options.port)
+    app.listen(options.port, address="10.0.1.4")
     tornado.ioloop.IOLoop.current().start()
 
 if __name__ == '__main__':

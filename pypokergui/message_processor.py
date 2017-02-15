@@ -16,6 +16,7 @@ class MessageProcessor(object):
             player = Player(uuid, game_config['initial_stack'], name)
             table.seats.sitdown(player)
         # start the first round
+        # TODO append game_start_message here
         state, msgs = self._start_new_round(1, game_config['blind_structure'], table)
         self.current_state = state
         return _parse_broadcast_destination(msgs, self.current_state['table'])
