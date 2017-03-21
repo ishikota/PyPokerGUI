@@ -14,15 +14,15 @@ def healthcheck(script_path, quiet=False):
     # Assertion-1. check if setup_ai method is implemented
     try:
         setup_method = _import_setup_method(script_path)
-    except:
-        if not quiet: print('"setup_ai" method was not found in [ %s ].' % script_path)
+    except Exception as e:
+        if not quiet: print('"setup_ai" method was not found in [ %s ].(Exception=%s)' % (script_path, e.message))
         status = False
 
     # Assertion-2. check if "setup_ai" method works
     try:
         if status: player = setup_method()
     except Exception as e:
-        if not quiet: print('Exception [ %s ] was raised when your "setup_ai" method invoked')
+        if not quiet: print('Exception [ %s ] was raised when your "setup_ai" method invoked' % e.message)
         status = False
 
     # Assertion-3. check if generated player is instance of BasePokerPlayer
@@ -39,3 +39,4 @@ def _import_setup_method(script_path):
     sys.path.append(dirname)
     m = importlib.import_module(os.path.splitext(filename)[0])
     return m.setup_ai
+

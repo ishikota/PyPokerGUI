@@ -6,6 +6,10 @@
     <div class="caption">
       <span class="player-name">{{player["name"]}}</span>
       <span class="player-stack">(${{player["stack"]}})</span>
+      <span class="hoge">
+      {% if round_state["dealer_btn"]==idx %}
+      <span class="badge badge-default">D</span>
+      {% end %}
     </div>
   </div>
 </span>
