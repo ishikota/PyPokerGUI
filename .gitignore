@@ -1,7 +1,5 @@
 *.pyc
 *.swp
-*.pickle
-**/.ipynb_checkpoints/**
 *.egg-info
 .pypirc
 dist
