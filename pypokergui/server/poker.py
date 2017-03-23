@@ -37,7 +37,7 @@ class Application(tornado.web.Application):
 class PokerRequestHandler(tornado.web.RequestHandler):
 
     def get(self):
-        self.render("index.html", config=global_game_config, registered=False)
+        self.render("index.html", config=global_game_manager, registered=False)
 
 class PokerWebSocketHandler(tornado.websocket.WebSocketHandler):
 
@@ -53,54 +53,54 @@ class PokerWebSocketHandler(tornado.websocket.WebSocketHandler):
 
     def on_close(self):
         PokerWebSocketHandler.sockets.remove(self)
-        if global_game_config.get_human_player_info(self.uuid):
-            global_game_config.remove_human_player_info(self.uuid)
-            MM.broadcast_config_update(self, global_game_config, self.sockets)
+        if global_game_manager.get_human_player_info(self.uuid):
+            global_game_manager.remove_human_player_info(self.uuid)
+            MM.broadcast_config_update(self, global_game_manager, self.sockets)
 
     def on_message(self, message):
         js = tornado.escape.json_decode(message)
         message_type = js['type']
         if 'action_new_member' == message_type:
-            global_game_config.join_human_player(js['name'], self.uuid)
-            MM.broadcast_config_update(self, global_game_config, self.sockets)
+            global_game_manager.join_human_player(js['name'], self.uuid)
+            MM.broadcast_config_update(self, global_game_manager, self.sockets)
         elif 'action_start_game' == message_type:
-            if not global_game_config.is_playing_poker:
-                global_game_config.start_game()
-                MM.broadcast_start_game(self, global_game_config, self.sockets)
-                MM.broadcast_update_game(self, global_game_config, self.sockets)
-                if self._is_next_player_ai(global_game_config):
+            if not global_game_manager.is_playing_poker:
+                global_game_manager.start_game()
+                MM.broadcast_start_game(self, global_game_manager, self.sockets)
+                MM.broadcast_update_game(self, global_game_manager, self.sockets)
+                if self._is_next_player_ai(global_game_manager):
                     self._progress_the_game_till_human()
         elif 'action_declare_action' == message_type:
-            if self.uuid == global_game_config.next_player_uuid:
+            if self.uuid == global_game_manager.next_player_uuid:
                 action, amount = js['action'], int(js['amount'])
-                global_game_config.update_game(action, amount)
-                MM.broadcast_update_game(self, global_game_config, self.sockets)
-                if self._is_next_player_ai(global_game_config):
+                global_game_manager.update_game(action, amount)
+                MM.broadcast_update_game(self, global_game_manager, self.sockets)
+                if self._is_next_player_ai(global_game_manager):
                     self._progress_the_game_till_human()
         else:
             raise Exception("Unexpected message [ %r ] received" % message)
 
     def _progress_the_game_till_human(self):
-        while self._is_next_player_ai(global_game_config):  # TODO break if game has finished
-            if GM.has_game_finished(global_game_config.latest_messages): break
-            action, amount = global_game_config.ask_action_to_ai_player(
-                    global_game_config.next_player_uuid)
-            global_game_config.update_game(action, amount)
-            MM.broadcast_update_game(self, global_game_config, self.sockets)
+        while self._is_next_player_ai(global_game_manager):  # TODO break if game has finished
+            if GM.has_game_finished(global_game_manager.latest_messages): break
+            action, amount = global_game_manager.ask_action_to_ai_player(
+                    global_game_manager.next_player_uuid)
+            global_game_manager.update_game(action, amount)
+            MM.broadcast_update_game(self, global_game_manager, self.sockets)
 
     def _is_next_player_ai(self, game_manager):
         uuid = game_manager.next_player_uuid
         return uuid and len(uuid) <= 2
 
-global_game_config = GM.GameManager()
+global_game_manager = GM.GameManager()
 
 def setup_config(config):
-    global_game_config.define_rule(
+    global_game_manager.define_rule(
             config['max_round'], config['initial_stack'], config['small_blind'],
             config['ante'], config['blind_structure']
     )
     for player in config['ai_players']:
-        global_game_config.join_ai_player(player['name'], player['path'])
+        global_game_manager.join_ai_player(player['name'], player['path'])
 
 def main():
     tornado.options.parse_command_line()
