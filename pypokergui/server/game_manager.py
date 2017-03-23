@@ -16,7 +16,7 @@ class GameManager(object):
         self.rule = MP.gen_game_config(max_round, initial_stack, small_blind, ante, blind_structure)
 
     def join_ai_player(self, name, setup_script_path):
-        ai_uuid = len(self.members_info)
+        ai_uuid = str(len(self.members_info))
         self.members_info.append(gen_ai_player_info(name, ai_uuid, setup_script_path))
 
     def join_human_player(self, name, uuid):

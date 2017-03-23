@@ -20,7 +20,7 @@ class GameManagerTest(BaseUnitTest):
 
     def test_join_ai_player(self):
         self.GM.join_ai_player("hoge", "fuga")
-        expected = [{ "type": "ai", "uuid":0, "name": "hoge", "setup_script_path": "fuga" }]
+        expected = [{ "type": "ai", "uuid":'0', "name": "hoge", "setup_script_path": "fuga" }]
         self.eq(expected, self.GM.members_info)
 
     def test_join_human_player(self):
@@ -44,7 +44,7 @@ class GameManagerTest(BaseUnitTest):
         self.GM.join_ai_player("hoge", ai_setup_script_path)
         self.GM.join_human_player("boo", "bar")
         self.GM.start_game()
-        self.eq(self.GM.ai_players[0].__class__.__name__, FishPlayer.__name__)
+        self.eq(self.GM.ai_players['0'].__class__.__name__, FishPlayer.__name__)
 
     def test_start_game(self):
         self.GM.define_rule(10, 100, 10, 5, None)
@@ -53,7 +53,7 @@ class GameManagerTest(BaseUnitTest):
         self.GM.start_game()
         self.assertGreaterEqual(self.GM.latest_messages, 1)
         self.true(self.GM.is_playing_poker)
-        self.eq(1, self.GM.next_player_uuid)
+        self.eq('1', self.GM.next_player_uuid)
 
     def test_update_game(self):
         self.GM.define_rule(10, 100, 10, 5, None)
@@ -61,11 +61,11 @@ class GameManagerTest(BaseUnitTest):
         self.GM.join_ai_player("fuga", ai_setup_script_path)
         self.GM.join_ai_player("bar", ai_setup_script_path)
         self.GM.start_game()
-        self.eq(0, self.GM.next_player_uuid)
+        self.eq('0', self.GM.next_player_uuid)
         self.GM.update_game("fold", 0)
-        self.eq(1, self.GM.next_player_uuid)
+        self.eq('1', self.GM.next_player_uuid)
         self.GM.update_game("raise", 30)
-        self.eq(2, self.GM.next_player_uuid)
+        self.eq('2', self.GM.next_player_uuid)
 
     def test_ask_action_to_ai_player(self):
         self.GM.define_rule(10, 100, 10, 5, None)
