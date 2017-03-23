@@ -14,8 +14,8 @@ class MessageManagerTest(BaseUnitTest):
         sockets = [gen_mock_socket(uuid) for uuid in uuids]
         with patch(
                 'pypokergui.server.message_manager._gen_config_update_message',
-                side_effect=lambda x, uuid: "config_update:%s" % uuid):
-            MM.broadcast_config_update(GameManager(), sockets)
+                side_effect=lambda x, y, uuid: "config_update:%s" % uuid):
+            MM.broadcast_config_update("handler", GameManager(), sockets)
         for soc, uuid in zip(sockets, uuids):
             expected = "config_update:%s" % uuid
             self.eq(expected, soc.write_message.call_args_list[0][0][0])
@@ -26,8 +26,8 @@ class MessageManagerTest(BaseUnitTest):
         gm = setup_game_manager(uuids)
         with patch(
                 'pypokergui.server.message_manager._gen_start_game_message',
-                side_effect=lambda x, uuid: "start_game:%s" % uuid):
-            MM.broadcast_start_game(gm, sockets)
+                side_effect=lambda x, y, uuid: "start_game:%s" % uuid):
+            MM.broadcast_start_game("handler", gm, sockets)
         for soc, uuid in zip(sockets, uuids):
             expected = "start_game:%s" % uuid
             self.eq(expected, soc.write_message.call_args_list[0][0][0])
@@ -46,7 +46,7 @@ class MessageManagerTest(BaseUnitTest):
             patch(
                 'pypokergui.server.message_manager._broadcast_message_to_ai',
                 side_effect=self._append_log_on_player):
-            MM.broadcast_update_game(gm, sockets, update_interval=0)
+            MM.broadcast_update_game("handler", gm, sockets, update_interval=0)
         for soc, uuid in zip(sockets, uuids):
             expected = "update_game"
             self.eq(expected, soc.write_message.call_args_list[0][0][0])
