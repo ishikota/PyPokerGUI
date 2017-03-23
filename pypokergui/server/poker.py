@@ -91,7 +91,7 @@ class PokerWebSocketHandler(tornado.websocket.WebSocketHandler):
         uuid = game_manager.next_player_uuid
         return uuid and len(uuid) <= 2
 
-path = "/Users/kota/development/PyPokerGUIEnv/PyPokerGUI/pypokergui/ggg.py"
+path = "/Users/kota/development/PyPokerGUIEnv/PyPokerGUI/sample_player/fish_player_setup.py"
 global_game_config = GM.GameManager()
 sample_game_config = {
         'max_round': 50,
