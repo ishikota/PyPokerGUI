@@ -5,6 +5,7 @@ src_path = os.path.join(root, "pypokergui")
 sys.path.append(root)
 sys.path.append(src_path)
 
+import yaml
 import uuid
 import tornado.ioloop
 import tornado.options
@@ -16,7 +17,7 @@ import pypokergui.server.game_manager as GM
 import pypokergui.server.message_manager as MM
 
 define("port", default=8888, help="run on the given port", type=int)
-define("config", default=None, help="path to game config", type=int)
+define("config", default=None, help="path to game config", type=str)
 
 class Application(tornado.web.Application):
 
@@ -91,27 +92,7 @@ class PokerWebSocketHandler(tornado.websocket.WebSocketHandler):
         uuid = game_manager.next_player_uuid
         return uuid and len(uuid) <= 2
 
-path = "/Users/kota/development/PyPokerGUIEnv/PyPokerGUI/sample_player/fish_player_setup.py"
 global_game_config = GM.GameManager()
-sample_game_config = {
-        'max_round': 50,
-        'initial_stack': 10000,
-        'small_blind': 25,
-        'ante': 0,
-        'blind_structure': None,
-        'ai_players': [
-            { 'name': "ai1", "path": path },
-            { 'name': "ai2", "path": path },
-            { 'name': "ai3", "path": path },
-            { 'name': "ai4", "path": path },
-            { 'name': "ai5", "path": path },
-            { 'name': "ai6", "path": path },
-            { 'name': "ai7", "path": path },
-            { 'name': "ai8", "path": path },
-            { 'name': "ai9", "path": path },
-            { 'name': "ai10", "path": path },
-            ]
-        }
 
 def setup_config(config):
     global_game_config.define_rule(
@@ -123,7 +104,8 @@ def setup_config(config):
 
 def main():
     tornado.options.parse_command_line()
-    config = sample_game_config  # TODO parse config file into hash
+    with open(options.config, "rb") as f:
+        config = yaml.load(f)
     setup_config(config)
     app = Application()
     app.listen(options.port)
