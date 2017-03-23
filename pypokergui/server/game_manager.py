@@ -1,4 +1,4 @@
-import pypokergui.message_processor as MP
+import pypokergui.engine_wrapper as Engine
 import pypokergui.ai_generator as AG
 
 class GameManager(object):
@@ -13,7 +13,7 @@ class GameManager(object):
         self.next_player_uuid = None
 
     def define_rule(self, max_round, initial_stack, small_blind, ante, blind_structure):
-        self.rule = MP.gen_game_config(max_round, initial_stack, small_blind, ante, blind_structure)
+        self.rule = Engine.gen_game_config(max_round, initial_stack, small_blind, ante, blind_structure)
 
     def join_ai_player(self, name, setup_script_path):
         ai_uuid = str(len(self.members_info))
@@ -36,9 +36,9 @@ class GameManager(object):
         assert self.rule and len(self.members_info) >= 2 and not self.is_playing_poker
         uuid_list = [member["uuid"] for member in self.members_info]
         name_list = [member["name"] for name in self.members_info]
-        players_info = MP.gen_players_info(uuid_list, name_list)
+        players_info = Engine.gen_players_info(uuid_list, name_list)
         self.ai_players = build_ai_players(self.members_info)
-        self.engine = MP.MessageProcessor()
+        self.engine = Engine.EngineWrapper()
         self.latest_messages = self.engine.start_game(players_info, self.rule)
         self.is_playing_poker = True
         self.next_player_uuid = fetch_next_player_uuid(self.latest_messages)
