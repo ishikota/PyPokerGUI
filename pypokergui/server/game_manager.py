@@ -35,7 +35,7 @@ class GameManager(object):
     def start_game(self):
         assert self.rule and len(self.members_info) >= 2 and not self.is_playing_poker
         uuid_list = [member["uuid"] for member in self.members_info]
-        name_list = [member["name"] for name in self.members_info]
+        name_list = [member["name"] for member in self.members_info]
         players_info = Engine.gen_players_info(uuid_list, name_list)
         self.ai_players = build_ai_players(self.members_info)
         self.engine = Engine.EngineWrapper()
