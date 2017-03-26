@@ -1,5 +1,9 @@
 <div id="round_state">
-  <h3>Round {{ round_state['round_count'] }} ( {{ round_state['street'].upper() }} )</h3>
+  <div class="text-center">
+    <h3>Round {{ round_state['round_count'] }} ( {{ round_state['street'].upper() }} )</h3>
+    <h3><small>Next Player is
+      [ {{ round_state['seats'][round_state['next_player']]['name'] if round_state['next_player'] != 'not_found' else "None" }} ]
+  </div>
   <!--
   <div id="basic_info_bar">
     <span id="small_blind_amount">small blind : {{ round_state['small_blind_amount'] }}</span>
@@ -11,33 +15,57 @@
     </span>
   </div>
   -->
-  <div id="community_card">
-    <h3>Community Card</h3>
-    {% for card in round_state['community_card'] %}
-      <img class="card" src="{{ static_url("images/card_%s.png" % card) }}" >
-    {% end %}
-  </div>
-  <h3>Pot</h3>
-  <div id="pot">
-    <div class="thumbnail pot" style="display:inline-block">
-      <img src="{{ static_url("images/pot.jpg") }}" >
-      <div class="caption">
-        <p>${{ round_state['pot']['main']['amount'] }}</p>
-      </div>
-    </div>
-    {% for sidepot in round_state['pot']['side'] %}
-      <div class="thumbnail pot" style="display:inline-block">
-        <img src="{{ static_url("images/pot.jpg") }}" >
-        <div class="caption">
-          <p>${{ round_state['pot']['main']['amount'] }}</p>
-        </div>
-      </div>
-    {% end %}
-  </div>
-  <h3>Players Information</h3>
-  <div id="seats">
-    {% for idx, player in enumerate(round_state['seats']) %}
+
+  <div id="round-state-table" class="img-rounded">
+
+    <div id="seats-upper">
+    {% for idx, player in zip(range(len(round_state['seats']))[:len(round_state['seats'])/2], round_state['seats']) %}
       {% include "player_game.html" %}
     {% end %}
+    </div>
+
+    <div id="community_card" class="text-center">
+      {% if len(round_state['community_card']) > 0 %}
+      <h4 class="round-state-table-text">Community Card</h4>
+      {% end %}
+      {% for card in round_state['community_card'] %}
+        <img class="card" src="{{ static_url("images/card_%s.png" % card) }}" >
+      {% end %}
+    </div>
+
+    <div id="pot">
+
+      <div class="text-center">
+        <h4 class="round-state-table-text">Pot</h4>
+      </div>
+
+      <div class="row row-center">
+        <!-- main pot -->
+        <div class="col-xs-3">
+          <div class="text-center">
+            <img src="{{ static_url("images/pot.jpg") }}" width=100%>
+            <h4 class="round-state-table-text">${{ round_state['pot']['main']['amount'] }}</p>
+          </div>
+        </div>
+        <!-- side pot -->
+        {% for sidepot in round_state['pot']['side'] %}
+          {% if sidepot['amount']!=0 %}
+            <div class="col-xs-2">
+              <div class="text-center">
+                <img src="{{ static_url("images/pot.jpg") }}" width=100%>
+                <h4 class="round-state-table-text">${{ sidepot['amount'] }}</p>
+              </div>
+            </div>
+          {% end %}
+        {% end %}
+      </div>
+    </div>
+
+    <div id="seats-lower">
+    {% for idx, player in zip(range(len(round_state['seats']))[len(round_state['seats'])/2:], round_state['seats'][len(round_state['seats'])/2:]) %}
+      {% include "player_game.html" %}
+    {% end %}
+    </div>
+
   </div>
 </div>

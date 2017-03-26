@@ -26,6 +26,17 @@ body {
   border: 0;
 }
 
+.row-center{
+  text-align:center;
+  letter-spacing:-0.4em;
+  }
+  .row-center > [class*='col-'] {
+  display:inline-block;
+  letter-spacing:0;
+  vertical-align:top;
+  float:none !important;
+}
+
 /*
 * For product stuff
 */
@@ -51,6 +62,17 @@ body {
 #event_content {
   padding: 10px;
 }
+
+#round-state-table {
+  margin-top: 30px;
+  padding: 10px;
+  background-color: #2E7D32;
+}
+
+.round-state-table-text {
+  color: #ffffff;
+}
+
 
 /*
 * For Google Icon Font
