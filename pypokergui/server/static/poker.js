@@ -1,3 +1,6 @@
+/*
+ *  Register callback functions on buttons.
+ */
 $(document).ready(function() {
     if (!window.console) window.console = {};
     if (!window.console.log) window.console.log = function() {};
@@ -10,10 +13,13 @@ $(document).ready(function() {
         startGame()
         return false;
     });
-    //$("#message").select();
     updater.start();
 });
 
+/*
+ *  Callback function invoked when
+ *  human player is registered.
+ */
 function registerPlayer(form) {
     var message = form.formToDict();
     message['type'] = "action_new_member"
@@ -22,18 +28,29 @@ function registerPlayer(form) {
     updater.socket.send(JSON.stringify(message));
 }
 
+/*
+ * Callback function invoked when
+ * game is starged.
+ */
 function startGame() {
     message = {}
     message['type'] = "action_start_game"
     updater.socket.send(JSON.stringify(message));
 }
 
+/*
+ * Callback function invoked when
+ * human player declared his action in the game.
+ */
 function declareAction(form) {
   var message = form.formToDict();
   message['type'] = "action_declare_action"
   updater.socket.send(JSON.stringify(message))
 }
 
+/*
+ * Helper function to get form information as hash.
+ */
 jQuery.fn.formToDict = function() {
     var fields = this.serializeArray();
     var json = {}
@@ -44,14 +61,22 @@ jQuery.fn.formToDict = function() {
     return json;
 };
 
+/*
+ *  This object setups and holds websocket.
+ */
 var updater = {
     socket: null,
 
+    /*
+     *  This method is invoked when index page is opened.
+     *  Setup websocket and register callback method on it.
+     *  URL would be "ws://localhost/pokersocket:8888".
+     */
     start: function() {
         var url = "ws://" + location.host + "/pokersocket";
         updater.socket = new WebSocket(url);
         updater.socket.onmessage = function(event) {
-            window.console.log(event.data)
+            window.console.log("received new message: " + event.data)
             message = JSON.parse(event.data)
             if ('config_update' == message['message_type']) {
               updater.updateConfig(message)
@@ -60,22 +85,27 @@ var updater = {
             } else if ('update_game' == message['message_type']) {
               updater.updateGame(message)
             } else {
-              window.console.error(message)
+              window.console.error("received unexpected message: " + message)
             }
         }
     },
 
+    /*
+     * Invoked when received the new message
+     * about update of config like new member is registered.
+     */
     updateConfig: function(message) {
         var node = $(message.html);
         $("#config_box").html(node)
         if (message.registered) {
           $("#registration_form input[type=submit]").prop("disabled", true);
         }
-        //node.hide();
-        //$("#player_box ul").append(node);
-        //node.slideDown();
     },
 
+    /*
+     * Invoked when received the message
+     * about start of the game.
+     */
     startGame: function(message) {
       var node = $(message.html)
       $("#container").html(node)
@@ -85,6 +115,10 @@ var updater = {
       });
     },
 
+    /*
+     * Invoked when received the message about
+     * new event of the game like "new round will start".
+     */
     updateGame: function(message) {
         content = message['content']
         window.console.log("updateGame: " + JSON.stringify(content))
@@ -134,3 +168,4 @@ var updater = {
       $("#event_box").html($(event_html))
     }
 };
+

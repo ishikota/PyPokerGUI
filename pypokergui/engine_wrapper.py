@@ -6,7 +6,7 @@ from pypokerengine.engine.round_manager import RoundManager
 from pypokerengine.engine.message_builder import MessageBuilder
 from pypokerengine.engine.poker_constants import PokerConstants as Const
 
-class MessageProcessor(object):
+class EngineWrapper(object):
 
     def start_game(self, players_info, game_config):
         self.config = game_config
