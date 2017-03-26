@@ -1,6 +1,6 @@
 <div class="col-xs-2 player-{{"active" if player["state"]=="participating" else "folded"}}">
   <i class="material-icons md-48
-    {{"md-inactive" if player["state"]=="folded" else ""}} 
+    {{"inactive" if player["state"]=="folded" else ""}} 
     {{"color-ai" if len(player["uuid"]) <= 2 else "color-human"}}">
     {{ 'android' if len(player["uuid"]) <= 2 else 'face' }}
   </i>
