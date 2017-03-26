@@ -1,14 +1,16 @@
 <span class="player-{{"active" if player["state"]=="participating" else "folded"}}">
   <div class="thumbnail md-col-2 center-block" style="display:inline-block">
     <i class="material-icons md-48 md-dark {{"md-inactive" if player["state"]=="folded" else ""}}">
-      face
+      {{ 'android' if len(player["uuid"]) <= 2 else 'face' }}
     </i>
     <div class="caption">
       <span class="player-name">{{player["name"]}}</span>
       <span class="player-stack">(${{player["stack"]}})</span>
-      <span class="hoge">
       {% if round_state["dealer_btn"]==idx %}
       <span class="badge badge-default">D</span>
+      {% end %}
+      {% if round_state["next_player"]==idx %}
+      <span class="badge badge-default">Turn</span>
       {% end %}
     </div>
   </div>
