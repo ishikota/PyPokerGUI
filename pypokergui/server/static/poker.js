@@ -109,6 +109,7 @@ var updater = {
     startGame: function(message) {
       var node = $(message.html)
       $("#container").html(node)
+      $("#declare_action_form").hide()
       $("#declare_action_form").on("submit", function() {
         declareAction($(this));
         return false;
