@@ -13,6 +13,8 @@ import tornado.web
 import tornado.websocket
 from tornado.options import define, options
 
+import pypokerengine.utils.action_utils as AU
+
 import pypokergui.server.game_manager as GM
 import pypokergui.server.message_manager as MM
 
@@ -72,13 +74,36 @@ class PokerWebSocketHandler(tornado.websocket.WebSocketHandler):
                     self._progress_the_game_till_human()
         elif 'action_declare_action' == message_type:
             if self.uuid == global_game_manager.next_player_uuid:
-                action, amount = js['action'], int(js['amount'])
+                action, amount = self._correct_action(js)
                 global_game_manager.update_game(action, amount)
                 MM.broadcast_update_game(self, global_game_manager, self.sockets)
                 if self._is_next_player_ai(global_game_manager):
                     self._progress_the_game_till_human()
         else:
             raise Exception("Unexpected message [ %r ] received" % message)
+
+    def _correct_action(self, data):
+        try:
+            data["amount"] = int(data["amount"])
+        except:
+            data["amount"] = -1
+        players = global_game_manager.engine.current_state["table"].seats.players
+        next_player_pos = global_game_manager.engine.current_state["next_player"]
+        sb_amount = global_game_manager.engine.current_state["small_blind_amount"]
+        actions = AU.generate_legal_actions(players, next_player_pos, sb_amount)
+
+        if data["action"] == "fold":
+            data["amount"] = 0
+        elif data["action"] == "call":
+            data["amount"] = actions[1]["amount"]
+        else:
+            legal = actions[2]["amount"]
+            if legal["min"] <= data["amount"] <= legal["max"]:
+                data["amount"] = data["amount"]
+            else:
+                data["action"] = "fold"
+                data["amount"] = 0
+        return data["action"], data["amount"]
 
     def _progress_the_game_till_human(self):
         while self._is_next_player_ai(global_game_manager):  # TODO break if game has finished

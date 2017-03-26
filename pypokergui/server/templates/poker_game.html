@@ -8,6 +8,35 @@
     <hr>
     <div id="input_box" class="container">
       <form action="/a/declare_action" method="post" id="declare_action_form">
+        <div class="form-group">
+          <fieldset class="form-group">
+            <legend>Choose your action</legend>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="action" id="r1" value="fold" checked> FOLD</input>
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="action" id="r1" value="call" checked> CALL</input>
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="action" id="r1" value="raise" checked> RAISE</input>
+              </label>
+            </div>
+          </fieldset>
+          <div class="form-group">
+            <label for="raiseAmoutInput">Raise Amount</label>
+            <input type="text" class="form-control" name="amount" id="raiseAmoutInput" placeholder="Enter raise amount"
+                  style="width:150px">
+          </div>
+          <button type="submit" class="btn btn-primary">delcare action</button>
+          <input type="hidden" name="next" value="{{ request.path }}">
+          {% module xsrf_form_html() %}
+        </div>
+        <!--
         <table>
           <tr>
             <td>
@@ -25,6 +54,7 @@
             </td>
           </tr>
         </table>
+        -->
       </form>
     </div>
     <div></div> <!-- for creating space -->
