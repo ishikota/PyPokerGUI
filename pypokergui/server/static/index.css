@@ -86,6 +86,8 @@ body {
 
 /* option class for icon color */
 .material-icons.orange600 { color: #FB8C00; }
+.material-icons.color-ai { color: #E8F5E9; }
+.material-icons.color-human { color: #FAFAFA; }
  
 .material-icons.md-dark { color: rgba(0, 0, 0, 1.0); }
 .material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
