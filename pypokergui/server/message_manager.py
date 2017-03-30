@@ -3,6 +3,16 @@ import logging
 
 import tornado.escape
 
+def alert_server_restart(handler, uuid, sockets):
+    soc = _find_socket_by_uuid(sockets, uuid)
+    soc.write_message(_gen_alert_server_restart_message(handler))
+
+def _gen_alert_server_restart_message(handler):
+    message = "Server has already run. Please restart the server to play the game again."
+    return {
+            'message_type': 'alert_restart_server',
+            'message': message
+            }
 
 def broadcast_config_update(handler, game_manager, sockets):
     for soc in sockets:
