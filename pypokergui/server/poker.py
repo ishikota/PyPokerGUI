@@ -106,7 +106,7 @@ class PokerWebSocketHandler(tornado.websocket.WebSocketHandler):
         return data["action"], data["amount"]
 
     def _progress_the_game_till_human(self):
-        while self._is_next_player_ai(global_game_manager):  # TODO break if game has finished
+        while self._is_next_player_ai(global_game_manager):
             if GM.has_game_finished(global_game_manager.latest_messages): break
             action, amount = global_game_manager.ask_action_to_ai_player(
                     global_game_manager.next_player_uuid)
