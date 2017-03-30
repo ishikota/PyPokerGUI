@@ -127,14 +127,17 @@ def setup_config(config):
     for player in config['ai_players']:
         global_game_manager.join_ai_player(player['name'], player['path'])
 
-def main():
-    tornado.options.parse_command_line()
-    with open(options.config, "rb") as f:
+def start_server(config_path, port):
+    with open(config_path, "rb") as f:
         config = yaml.load(f)
     setup_config(config)
     app = Application()
-    app.listen(options.port)
+    app.listen(port)
     tornado.ioloop.IOLoop.current().start()
+
+def main():
+    tornado.options.parse_command_line()
+    start_server(options.config, options.port)
 
 if __name__ == '__main__':
     main()
