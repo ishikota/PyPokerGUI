@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'PyPokerGUI',
-    version = '0.0.4',
+    version = '0.0.5',
     author = 'ishikota',
     author_email = 'ishikota086@gmail.com',
     description = 'GUI application for PyPokerEngine',
