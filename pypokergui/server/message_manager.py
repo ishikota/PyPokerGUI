@@ -31,11 +31,24 @@ def broadcast_start_game(handler, game_manager, sockets):
         except:
             logging.error("Error sending message", exc_info=True)
     # broadcast message to ai by invoking proper callback method
-    # FIXME TMP SOLUTION to broadcast game_start_message to ai
-    dummy_game_info = game_manager.latest_messages[0][1]['message']
+    game_info = _gen_game_info(game_manager)
     for uuid, player in game_manager.ai_players.items():
-        player.receive_game_start_message(dummy_game_info)
+        player.receive_game_start_message(game_info)
         player.set_uuid(uuid)
+
+def _gen_game_info(game_manager):
+    seats = game_manager.latest_messages[0][1]["message"]["seats"]
+    copy_seats = [{k:v for k,v in player.items()} for player in seats]
+    for player in copy_seats:
+        player["stack"] = game_manager.rule["initial_stack"]
+    player_num = len(seats)
+    rule = {k:v for k,v in game_manager.rule.items()}
+    rule["small_blind_amount"] = rule.pop("small_blind")
+    return {
+            "seats": copy_seats,
+            "player_num": player_num,
+            "rule": rule,
+            }
 
 def _gen_start_game_message(handler, game_manager, uuid):
     registered = game_manager.get_human_player_info(uuid)

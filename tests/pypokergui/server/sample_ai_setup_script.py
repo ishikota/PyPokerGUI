@@ -10,7 +10,7 @@ class FishPlayer(BasePokerPlayer):  # Do not forget to make parent class as "Bas
         return action, amount   # action returned here is sent to the poker engine
 
     def receive_game_start_message(self, game_info):
-        pass
+        self.game_info= game_info
 
     def receive_round_start_message(self, round_count, hole_card, seats):
         pass

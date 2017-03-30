@@ -33,6 +33,11 @@ class MessageManagerTest(BaseUnitTest):
             self.eq(expected, soc.write_message.call_args_list[0][0][0])
         for uuid, player in gm.ai_players.items():
             self.eq(uuid, player.uuid)
+            self.eq(3, player.game_info["player_num"])
+            self.eq(10, player.game_info["rule"]["small_blind_amount"])
+            self.eq(100, player.game_info["rule"]["initial_stack"])
+        for player in player.game_info["seats"]:
+            self.eq(100, player["stack"])
 
     def test_broadcast_update_game(self):
         uuids = ["hoge", "fuga"]
