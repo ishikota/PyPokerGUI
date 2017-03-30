@@ -87,8 +87,12 @@ body {
 /* option class for icon color */
 .material-icons.color-ai { color: #E8F5E9; }
 .material-icons.color-ai.inactive { color: #212121; }
+.material-icons.color-ai.dark { color: #43A047; }
+.material-icons.color-ai.dark.inactive { color: #212121; }
 .material-icons.color-human { color: #FAFAFA; }
 .material-icons.color-human.inactive { color: #212121; }
+.material-icons.color-human.dark { color: #757575; }
+.material-icons.color-human.dark.inactive { color: #212121; }
 
 .material-icons.orange600 { color: #FB8C00; }
  
