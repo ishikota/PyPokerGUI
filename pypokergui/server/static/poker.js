@@ -109,6 +109,7 @@ var updater = {
     startGame: function(message) {
       var node = $(message.html)
       $("#container").html(node)
+      $("#declare_action_form").hide()
       $("#declare_action_form").on("submit", function() {
         declareAction($(this));
         return false;
@@ -120,6 +121,7 @@ var updater = {
      * new event of the game like "new round will start".
      */
     updateGame: function(message) {
+        $("#declare_action_form").hide()
         content = message['content']
         window.console.log("updateGame: " + JSON.stringify(content))
         message_type = content['update_type']
@@ -134,6 +136,7 @@ var updater = {
        } else if ('game_result_message' == message_type) {
          updater.gameResult(content.event_html)
        } else if ('ask_message' == message_type) {
+         $("#declare_action_form").show()
          updater.askAction(content.table_html, content.event_html)
        } else {
           window.console.error("unexpected message in updateGame: " + content)

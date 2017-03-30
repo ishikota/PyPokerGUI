@@ -26,6 +26,17 @@ body {
   border: 0;
 }
 
+.row-center{
+  text-align:center;
+  letter-spacing:-0.4em;
+  }
+  .row-center > [class*='col-'] {
+  display:inline-block;
+  letter-spacing:0;
+  vertical-align:top;
+  float:none !important;
+}
+
 /*
 * For product stuff
 */
@@ -45,12 +56,23 @@ body {
 .info-box {
   background-color: #f9f9f9;
   padding: 10px;
-  margin-top: 10px;
+  margin-top: 50px;
 }
 
 #event_content {
   padding: 10px;
 }
+
+#round-state-table {
+  margin-top: 30px;
+  padding: 10px;
+  background-color: #2E7D32;
+}
+
+.round-state-table-text {
+  color: #ffffff;
+}
+
 
 /*
 * For Google Icon Font
@@ -63,6 +85,15 @@ body {
 .material-icons.md-48 { font-size: 48px; }
 
 /* option class for icon color */
+.material-icons.color-ai { color: #E8F5E9; }
+.material-icons.color-ai.inactive { color: #212121; }
+.material-icons.color-ai.dark { color: #43A047; }
+.material-icons.color-ai.dark.inactive { color: #212121; }
+.material-icons.color-human { color: #FAFAFA; }
+.material-icons.color-human.inactive { color: #212121; }
+.material-icons.color-human.dark { color: #757575; }
+.material-icons.color-human.dark.inactive { color: #212121; }
+
 .material-icons.orange600 { color: #FB8C00; }
  
 .material-icons.md-dark { color: rgba(0, 0, 0, 1.0); }

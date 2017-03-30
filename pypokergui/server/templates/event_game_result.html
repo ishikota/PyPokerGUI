@@ -4,7 +4,30 @@
 
 {% block event_content %}
 <div id="game_result">
-  {{ game_information }}
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="text-center">type</th>
+        <th class="text-center">name</th>
+        <th class="text-center">stack</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for player in sorted(game_information["seats"], key=lambda p: p["stack"])[::-1] %}
+        <tr>
+          <td class="text-center">
+            <i class="material-icons md-18 dark
+              {{"inactive" if player["state"]=="folded" else ""}} 
+              {{"color-ai" if len(player["uuid"]) <= 2 else "color-human"}}">
+              {{ 'android' if len(player["uuid"]) <= 2 else 'face' }}
+            </i>
+          </td>
+          <td class="text-center">{{player["name"]}}</td>
+          <td class="text-center">{{player["stack"]}}</td>
+        </tr>
+      {% end %}
+    </tbody>
+  </table>
 </div>
 {% end %}
 
