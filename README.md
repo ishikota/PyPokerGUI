@@ -12,7 +12,7 @@ If you have not checked our [PyPokerEngine](https://github.com/ishikota/PyPokerE
 
 # Tutorial
 In this tutorial, we will play poker with simple AI "*FishPlayer*".  
-("*FishPlayer*" is a AI always declares CALL action. )
+("*FishPlayer*" is an AI always declares CALL action. )
 
 The outline of this tutorial is following.
 
@@ -121,7 +121,7 @@ pypokergui serve /Users/ishikota/poker/poker_conf.yaml
 ```
 
 Then you would see registration page on your browser.  
-Please register yourself in the page and start the game like below demo.
+Please register yourself in the page and start the game like below demo. Enjoy poker!!
 
 **TODO demo gif to register and play game**
 
