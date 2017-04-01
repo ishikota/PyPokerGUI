@@ -21,7 +21,7 @@ def cli():
 
 @cli.command(name="serve")
 @click.argument("config")
-@click.option("--port", default=8888, help="port to run server")
+@click.option("--port", default=8000, help="port to run server")
 def serve_command(config, port):
     host = "localhost"
     webbrowser.open("http://%s:%s" % (host, port))
