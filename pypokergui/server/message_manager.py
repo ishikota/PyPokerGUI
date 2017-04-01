@@ -3,6 +3,16 @@ import logging
 
 import tornado.escape
 
+def alert_server_restart(handler, uuid, sockets):
+    soc = _find_socket_by_uuid(sockets, uuid)
+    soc.write_message(_gen_alert_server_restart_message(handler))
+
+def _gen_alert_server_restart_message(handler):
+    message = "Server has already run. Please restart the server to play the game again."
+    return {
+            'message_type': 'alert_restart_server',
+            'message': message
+            }
 
 def broadcast_config_update(handler, game_manager, sockets):
     for soc in sockets:
@@ -31,11 +41,24 @@ def broadcast_start_game(handler, game_manager, sockets):
         except:
             logging.error("Error sending message", exc_info=True)
     # broadcast message to ai by invoking proper callback method
-    # FIXME TMP SOLUTION to broadcast game_start_message to ai
-    dummy_game_info = game_manager.latest_messages[0][1]['message']
+    game_info = _gen_game_info(game_manager)
     for uuid, player in game_manager.ai_players.items():
-        player.receive_game_start_message(dummy_game_info)
+        player.receive_game_start_message(game_info)
         player.set_uuid(uuid)
+
+def _gen_game_info(game_manager):
+    seats = game_manager.latest_messages[0][1]["message"]["seats"]
+    copy_seats = [{k:v for k,v in player.items()} for player in seats]
+    for player in copy_seats:
+        player["stack"] = game_manager.rule["initial_stack"]
+    player_num = len(seats)
+    rule = {k:v for k,v in game_manager.rule.items()}
+    rule["small_blind_amount"] = rule.pop("small_blind")
+    return {
+            "seats": copy_seats,
+            "player_num": player_num,
+            "rule": rule,
+            }
 
 def _gen_start_game_message(handler, game_manager, uuid):
     registered = game_manager.get_human_player_info(uuid)
@@ -48,7 +71,7 @@ def _gen_start_game_message(handler, game_manager, uuid):
             'html': html
             }
 
-def broadcast_update_game(handler, game_manager, sockets, update_interval=0):
+def broadcast_update_game(handler, game_manager, sockets, mode="moderate"):
     for destination, update in game_manager.latest_messages:
         for uuid in _parse_destination(destination, game_manager, sockets):
             if len(str(uuid)) <= 2:
@@ -61,11 +84,11 @@ def broadcast_update_game(handler, game_manager, sockets, update_interval=0):
                     socket.write_message(message)
                 except:
                     logging.error("Error sending message", exc_info=True)
-        time.sleep(update_interval)
+                time.sleep(_calc_wait_interval(mode, update))
 
 def _parse_destination(destination, game_manager, sockets):
     if destination == -1:
-        return [soc.uuid for soc in sockets] + game_manager.ai_players.keys()
+        return [soc.uuid for soc in sockets] + list(game_manager.ai_players.keys())
     else:
         return [destination]
 
@@ -176,3 +199,42 @@ def _broadcast_message_to_ai(ai_player, message):
     else:
         raise Exception("Unexpected message received : %r" % message)
 
+def _calc_wait_interval(mode, update):
+    message_type = update["message"]["message_type"]
+    if 'dev' == mode:
+        return 0
+    elif 'slow' == mode:
+        return SLOW_WAIT_INTERVAL[message_type]
+    elif 'moderate' == mode:
+        return MODERATE_WAIT_INTERVAL[message_type]
+    elif 'fast' == mode:
+        return FAST_WAIT_INTERVAL[message_type]
+    else:
+        raise Exception("Unexpected mode received [ %s ]" % mode)
+
+SLOW_WAIT_INTERVAL = {  # TODO
+        'round_start_message': 0,
+        'street_start_message': 0,
+        'ask_message': 0,
+        'game_update_message': 0,
+        'round_result_message': 0,
+        'game_result_message': 0
+}
+
+MODERATE_WAIT_INTERVAL = {
+        'round_start_message': 3,
+        'street_start_message': 2,
+        'ask_message': 0,
+        'game_update_message': 2,
+        'round_result_message': 10,
+        'game_result_message': 0
+}
+
+FAST_WAIT_INTERVAL = {
+        'round_start_message': 1,
+        'street_start_message': 0.5,
+        'ask_message': 0,
+        'game_update_message': 0.5,
+        'round_result_message': 3,
+        'game_result_message': 0
+}

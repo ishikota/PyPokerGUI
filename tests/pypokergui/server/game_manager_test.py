@@ -51,7 +51,7 @@ class GameManagerTest(BaseUnitTest):
         self.GM.join_ai_player("hoge", ai_setup_script_path)
         self.GM.join_ai_player("fuga", ai_setup_script_path)
         self.GM.start_game()
-        self.assertGreaterEqual(self.GM.latest_messages, 1)
+        self.assertGreaterEqual(len(self.GM.latest_messages), 1)
         self.true(self.GM.is_playing_poker)
         self.eq('1', self.GM.next_player_uuid)
 

@@ -33,12 +33,17 @@ class MessageManagerTest(BaseUnitTest):
             self.eq(expected, soc.write_message.call_args_list[0][0][0])
         for uuid, player in gm.ai_players.items():
             self.eq(uuid, player.uuid)
+            self.eq(3, player.game_info["player_num"])
+            self.eq(10, player.game_info["rule"]["small_blind_amount"])
+            self.eq(100, player.game_info["rule"]["initial_stack"])
+        for player in player.game_info["seats"]:
+            self.eq(100, player["stack"])
 
     def test_broadcast_update_game(self):
         uuids = ["hoge", "fuga"]
         sockets = [gen_mock_socket(uuid) for uuid in uuids]
         gm = setup_game_manager(uuids)
-        gm.ai_players.values()[0].debug_message = None
+        list(gm.ai_players.values())[0].debug_message = None
         gm.update_game("fold", 0)
         with patch(
                 'pypokergui.server.message_manager._gen_game_update_message',
@@ -46,7 +51,7 @@ class MessageManagerTest(BaseUnitTest):
             patch(
                 'pypokergui.server.message_manager._broadcast_message_to_ai',
                 side_effect=self._append_log_on_player):
-            MM.broadcast_update_game("handler", gm, sockets, update_interval=0)
+            MM.broadcast_update_game("handler", gm, sockets, mode="dev")
         for soc, uuid in zip(sockets, uuids):
             expected = "update_game"
             self.eq(expected, soc.write_message.call_args_list[0][0][0])

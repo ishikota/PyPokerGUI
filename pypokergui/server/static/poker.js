@@ -84,6 +84,8 @@ var updater = {
               updater.startGame(message)
             } else if ('update_game' == message['message_type']) {
               updater.updateGame(message)
+            } else if ('alert_restart_server' == message['message_type']) {
+              updater.alert_restart_server(message)
             } else {
               window.console.error("received unexpected message: " + message)
             }
@@ -169,6 +171,11 @@ var updater = {
     askAction: function(table_html, event_html) {
       $("#table").html($(table_html))
       $("#event_box").html($(event_html))
+    },
+
+    alert_restart_server: function(message) {
+      alert(message.message)
     }
+
 };
 

@@ -1,2 +1,4 @@
 pypokerengine
 tornado
+click
+pyyaml

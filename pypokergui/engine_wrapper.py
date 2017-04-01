@@ -16,7 +16,6 @@ class EngineWrapper(object):
             player = Player(uuid, game_config['initial_stack'], name)
             table.seats.sitdown(player)
         # start the first round
-        # TODO append game_start_message here
         state, msgs = self._start_new_round(1, game_config['blind_structure'], table)
         self.current_state = state
         return _parse_broadcast_destination(msgs, self.current_state['table'])
@@ -65,7 +64,7 @@ def gen_game_config(max_round, initial_stack, small_blind, ante, blind_structure
     assert ante >= 0
     if not blind_structure:
         blind_structure = { 1 : { 'small_blind': small_blind, 'ante': ante } }
-    if not blind_structure.has_key(1):
+    if not 1 in blind_structure:
         blind_structure[1] = { 'small_blind': small_blind, 'ante': ante }
     return {
             'max_round': max_round,
