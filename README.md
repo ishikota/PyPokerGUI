@@ -7,7 +7,7 @@
 GUI application for [PyPokerEngine](https://github.com/ishikota/PyPokerEngine).  
 You can play poker with your AI bia browser.
 
-![app_demo](https://github.com/ishikota/PyPokerGUI/blob/release/screenshot/poker_demo.gif)
+![app_demo](https://github.com/ishikota/PyPokerGUI/blob/master/screenshot/poker_demo.gif)
 
 This library assumes that your AI is implemented in [PyPokerEngine](https://github.com/ishikota/PyPokerEngine) format.  
 If you have not checked our [PyPokerEngine](https://github.com/ishikota/PyPokerEngine), we recommend you to check it first.
@@ -128,8 +128,8 @@ Then browser will be opened and you would see registration page.
 Please register yourself in the page and start the game. Enjoy poker!!
 
 ### How to registrate yourself
-<img src="https://github.com/ishikota/PyPokerGUI/blob/release/screenshot/poker_registration.png" width=600px/>
+<img src="https://github.com/ishikota/PyPokerGUI/blob/master/screenshot/poker_registration.png" width=600px/>
 
 ### How to declare action in the game
-<img src="https://github.com/ishikota/PyPokerGUI/blob/release/screenshot/poker_game.png" width=600px/>
+<img src="https://github.com/ishikota/PyPokerGUI/blob/master/screenshot/poker_game.png" width=600px/>
 
