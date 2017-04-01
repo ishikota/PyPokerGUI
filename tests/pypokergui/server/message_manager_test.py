@@ -43,7 +43,7 @@ class MessageManagerTest(BaseUnitTest):
         uuids = ["hoge", "fuga"]
         sockets = [gen_mock_socket(uuid) for uuid in uuids]
         gm = setup_game_manager(uuids)
-        gm.ai_players.values()[0].debug_message = None
+        list(gm.ai_players.values())[0].debug_message = None
         gm.update_game("fold", 0)
         with patch(
                 'pypokergui.server.message_manager._gen_game_update_message',
