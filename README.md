@@ -1,4 +1,9 @@
 # PyPokerGUI
+
+[![Build Status](https://travis-ci.org/ishikota/PyPokerGUI.svg?branch=master)](https://travis-ci.org/ishikota/PyPokerGUI)
+[![PyPI](https://img.shields.io/pypi/v/PyPokerGUI.svg?maxAge=2592000)](https://badge.fury.io/py/PyPokerGUI)
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/ishikota/PyPokerGUI/blob/master/LICENSE.md)
+
 GUI application for [PyPokerEngine](https://github.com/ishikota/PyPokerEngine).  
 You can play poker with your AI bia browser.
 
