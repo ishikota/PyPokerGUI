@@ -22,10 +22,11 @@ def cli():
 @cli.command(name="serve")
 @click.argument("config")
 @click.option("--port", default=8000, help="port to run server")
-def serve_command(config, port):
+@click.option("--speed", default="moderate", type=click.Choice(["moderate", "fast"]), help="how fast game progress")
+def serve_command(config, port, speed):
     host = "localhost"
     webbrowser.open("http://%s:%s" % (host, port))
-    start_server(config, port)
+    start_server(config, port, speed)
 
 @cli.command(name="build_config")
 @click.option("-r", "--maxround", default=10, help="final round of the game")

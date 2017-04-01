@@ -71,7 +71,7 @@ def _gen_start_game_message(handler, game_manager, uuid):
             'html': html
             }
 
-def broadcast_update_game(handler, game_manager, sockets, update_interval=0):
+def broadcast_update_game(handler, game_manager, sockets, mode="moderate"):
     for destination, update in game_manager.latest_messages:
         for uuid in _parse_destination(destination, game_manager, sockets):
             if len(str(uuid)) <= 2:
@@ -84,7 +84,7 @@ def broadcast_update_game(handler, game_manager, sockets, update_interval=0):
                     socket.write_message(message)
                 except:
                     logging.error("Error sending message", exc_info=True)
-        time.sleep(update_interval)
+                time.sleep(_calc_wait_interval(mode, update))
 
 def _parse_destination(destination, game_manager, sockets):
     if destination == -1:
@@ -199,3 +199,42 @@ def _broadcast_message_to_ai(ai_player, message):
     else:
         raise Exception("Unexpected message received : %r" % message)
 
+def _calc_wait_interval(mode, update):
+    message_type = update["message"]["message_type"]
+    if 'dev' == mode:
+        return 0
+    elif 'slow' == mode:
+        return SLOW_WAIT_INTERVAL[message_type]
+    elif 'moderate' == mode:
+        return MODERATE_WAIT_INTERVAL[message_type]
+    elif 'fast' == mode:
+        return FAST_WAIT_INTERVAL[message_type]
+    else:
+        raise Exception("Unexpected mode received [ %s ]" % mode)
+
+SLOW_WAIT_INTERVAL = {  # TODO
+        'round_start_message': 0,
+        'street_start_message': 0,
+        'ask_message': 0,
+        'game_update_message': 0,
+        'round_result_message': 0,
+        'game_result_message': 0
+}
+
+MODERATE_WAIT_INTERVAL = {
+        'round_start_message': 3,
+        'street_start_message': 2,
+        'ask_message': 0,
+        'game_update_message': 2,
+        'round_result_message': 10,
+        'game_result_message': 0
+}
+
+FAST_WAIT_INTERVAL = {
+        'round_start_message': 1,
+        'street_start_message': 0.5,
+        'ask_message': 0,
+        'game_update_message': 0.5,
+        'round_result_message': 3,
+        'game_result_message': 0
+}

@@ -51,7 +51,7 @@ class MessageManagerTest(BaseUnitTest):
             patch(
                 'pypokergui.server.message_manager._broadcast_message_to_ai',
                 side_effect=self._append_log_on_player):
-            MM.broadcast_update_game("handler", gm, sockets, update_interval=0)
+            MM.broadcast_update_game("handler", gm, sockets, mode="dev")
         for soc, uuid in zip(sockets, uuids):
             expected = "update_game"
             self.eq(expected, soc.write_message.call_args_list[0][0][0])

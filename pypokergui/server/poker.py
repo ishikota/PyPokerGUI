@@ -20,6 +20,7 @@ import pypokergui.server.message_manager as MM
 
 define("port", default=8888, help="run on the given port", type=int)
 define("config", default=None, help="path to game config", type=str)
+define("speed", default="moderate", help="how fast game progress", type=str)
 
 class Application(tornado.web.Application):
 
@@ -71,14 +72,14 @@ class PokerWebSocketHandler(tornado.websocket.WebSocketHandler):
             else:
                 global_game_manager.start_game()
                 MM.broadcast_start_game(self, global_game_manager, self.sockets)
-                MM.broadcast_update_game(self, global_game_manager, self.sockets)
+                MM.broadcast_update_game(self, global_game_manager, self.sockets, MODE_SPEED)
                 if self._is_next_player_ai(global_game_manager):
                     self._progress_the_game_till_human()
         elif 'action_declare_action' == message_type:
             if self.uuid == global_game_manager.next_player_uuid:
                 action, amount = self._correct_action(js)
                 global_game_manager.update_game(action, amount)
-                MM.broadcast_update_game(self, global_game_manager, self.sockets)
+                MM.broadcast_update_game(self, global_game_manager, self.sockets, MODE_SPEED)
                 if self._is_next_player_ai(global_game_manager):
                     self._progress_the_game_till_human()
         else:
@@ -113,12 +114,13 @@ class PokerWebSocketHandler(tornado.websocket.WebSocketHandler):
             action, amount = global_game_manager.ask_action_to_ai_player(
                     global_game_manager.next_player_uuid)
             global_game_manager.update_game(action, amount)
-            MM.broadcast_update_game(self, global_game_manager, self.sockets)
+            MM.broadcast_update_game(self, global_game_manager, self.sockets, MODE_SPEED)
 
     def _is_next_player_ai(self, game_manager):
         uuid = game_manager.next_player_uuid
         return uuid and len(uuid) <= 2
 
+MODE_SPEED = "moderate"
 global_game_manager = GM.GameManager()
 
 def setup_config(config):
@@ -129,17 +131,19 @@ def setup_config(config):
     for player in config['ai_players']:
         global_game_manager.join_ai_player(player['name'], player['path'])
 
-def start_server(config_path, port):
+def start_server(config_path, port, speed):
+    global MODE_SPEED
     with open(config_path, "rb") as f:
         config = yaml.load(f)
     setup_config(config)
+    MODE_SPEED = speed
     app = Application()
     app.listen(port)
     tornado.ioloop.IOLoop.current().start()
 
 def main():
     tornado.options.parse_command_line()
-    start_server(options.config, options.port)
+    start_server(options.config, options.port, options.speed)
 
 if __name__ == '__main__':
     main()
