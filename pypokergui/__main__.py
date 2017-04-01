@@ -3,13 +3,14 @@
 import os
 import sys
 
-import click
-
 # Resolve path configuration
 root = os.path.join(os.path.dirname(__file__), "..")
 src = os.path.join(root, "pypokergui")
 sys.path.append(root)
 sys.path.append(src)
+
+import click
+import webbrowser
 
 from pypokergui.server.poker import start_server
 from pypokergui.config_builder import build_config
@@ -22,6 +23,8 @@ def cli():
 @click.argument("config")
 @click.option("--port", default=8888, help="port to run server")
 def serve_command(config, port):
+    host = "localhost"
+    webbrowser.open("http://%s:%s" % (host, port))
     start_server(config, port)
 
 @cli.command(name="build_config")
