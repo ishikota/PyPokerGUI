@@ -2,7 +2,7 @@
 GUI application for [PyPokerEngine](https://github.com/ishikota/PyPokerEngine).  
 You can play poker with your AI bia browser.
 
-**TODO demo gif image comes here**
+![app_demo](https://github.com/ishikota/PyPokerGUI/blob/release/screenshot/poker_demo.gif)
 
 This library assumes that your AI is implemented in [PyPokerEngine](https://github.com/ishikota/PyPokerEngine) format.  
 If you have not checked our [PyPokerEngine](https://github.com/ishikota/PyPokerEngine), we recommend you to check it first.
@@ -114,14 +114,17 @@ We assume that you put this file on `/Users/ishikota/poker/poker_conf.yaml` in f
 
 ## Start the server with config file and play the game
 Ok, everything is ready. We start the local server with our config file.
-Please type below command on your console and access `http://localhost:8888/`.
 
 ```bash
 pypokergui serve /Users/ishikota/poker/poker_conf.yaml
 ```
 
-Then you would see registration page on your browser.  
-Please register yourself in the page and start the game like below demo. Enjoy poker!!
+Then browser will be opened and you would see registration page.  
+Please register yourself in the page and start the game. Enjoy poker!!
 
-**TODO demo gif to register and play game**
+### How to registrate yourself
+<img src="https://github.com/ishikota/PyPokerGUI/blob/release/screenshot/poker_registration.png" width=600px/>
+
+### How to declare action in the game
+<img src="https://github.com/ishikota/PyPokerGUI/blob/release/screenshot/poker_game.png" width=600px/>
 
