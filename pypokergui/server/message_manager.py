@@ -88,7 +88,7 @@ def broadcast_update_game(handler, game_manager, sockets, mode="moderate"):
 
 def _parse_destination(destination, game_manager, sockets):
     if destination == -1:
-        return [soc.uuid for soc in sockets] + game_manager.ai_players.keys()
+        return [soc.uuid for soc in sockets] + list(game_manager.ai_players.keys())
     else:
         return [destination]
 
