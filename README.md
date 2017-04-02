@@ -121,7 +121,7 @@ We assume that you put this file on `/Users/ishikota/poker/poker_conf.yaml` in f
 Ok, everything is ready. We start the local server with our config file.
 
 ```bash
-pypokergui serve /Users/ishikota/poker/poker_conf.yaml
+pypokergui serve /Users/ishikota/poker/poker_conf.yaml --port 8000 --speed moderate
 ```
 
 Then browser will be opened and you would see registration page.  
