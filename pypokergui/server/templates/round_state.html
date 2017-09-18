@@ -19,7 +19,7 @@
   <div id="round-state-table" class="img-rounded">
 
     <div id="seats-upper" class="row row-center">
-    {% for idx, player in zip(range(len(round_state['seats']))[:len(round_state['seats'])/2], round_state['seats']) %}
+    {% for idx, player in zip(range(len(round_state['seats']))[:int(len(round_state['seats'])/2)], round_state['seats']) %}
       {% include "player_game.html" %}
     {% end %}
     </div>
@@ -62,7 +62,7 @@
     </div>
 
     <div id="seats-lower" class="row row-center">
-    {% for idx, player in zip(range(len(round_state['seats']))[len(round_state['seats'])/2:], round_state['seats'][len(round_state['seats'])/2:]) %}
+    {% for idx, player in zip(range(len(round_state['seats']))[int(len(round_state['seats'])/2):], round_state['seats'][int(len(round_state['seats'])/2):]) %}
       {% include "player_game.html" %}
     {% end %}
     </div>
